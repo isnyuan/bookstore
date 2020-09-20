@@ -1,23 +1,6 @@
 server:
   port: 8080
 
-security:
-  oauth2:
-    resource:
-      prefer-token-info: true
-      token-info-uri: http://sc-security-uaa/oauth/token
-      jwt:
-        key-value: secret
-    #        key-uri: http://sc-security-uaa/oauth/token_key
-    client:
-      client-id: client
-      client-secret: client
-      grant-type: client_credentials
-      access-token-uri: http://sc-security-uaa/oauth/token
-      user-authorization-uri: http://sc-security-uaa/oauth/authorize
-  sessions: stateless
-
-
 spring:
   # 关闭thymeleaf缓存
   thymeleaf:
