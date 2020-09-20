@@ -4,6 +4,7 @@ import com.bookstore.entity.UserDTO;
 import com.bookstore.entity.UserInfo;
 import com.bookstore.service.UserService;
 import com.bookstore.utils.Response;
+import com.bookstore.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -87,6 +88,13 @@ public class UserController {
         } catch (Exception e) {
             return Response.servers("删除用户操作有误！");
         }
+    }
+
+    @GetMapping("/test")
+    public void test() {
+        SecurityUtils.getUserAuthentication();
+        System.out.println("************");
+        SecurityUtils.getCurrentPrincipal();
     }
 
 }

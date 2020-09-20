@@ -25,42 +25,25 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
-//        http
-//                .csrf().disable() // 关闭跨域
-//                .authorizeRequests() // 授权请求
-//                .antMatchers("/login",
-//                        "/api/**",
-//                        "/**/heapdump",
-//                        "/**/loggers",
-//                        "/**/liquibase",
-//                        "/**/logfile",
-//                        "/**/flyway",
-//                        "/**/auditevents",
-//                        "/**/jolokia").permitAll() // 这些路径所有人可以访问
-//                .and()
-//                .authorizeRequests()
-//                .antMatchers("/**").hasRole("USER") // 角色为USER
-//                .antMatchers("/**").authenticated() // 需要经过身份认证
-//                .and()
-//                .formLogin() // 登录
-//                .loginPage("/login.html") // 登录页面
-//                .loginProcessingUrl("/login").permitAll()
-//                .defaultSuccessUrl("/index.html") // 成功跳转页面路径
-//                .and()
-//                .logout() // 登出
-//                .deleteCookies("remove") // 登出后清除cookie
-//                .logoutSuccessUrl("/login.html").permitAll() // 登出成功后跳转的页面路径
-//                .and()
-//                .httpBasic(); // http基本认证:每次请求api时都提供用户的username和password
-
         http
-                .csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/").hasRole("admin")
-                .antMatchers("/index").hasRole("admin")
+                .formLogin() // 登录
+                .loginPage("/login.html") // 登录页面
+                .loginProcessingUrl("/login") // 登录请求地址
+                .usernameParameter("username") // 用户名
+                .passwordParameter("password") // 密码
+                .defaultSuccessUrl("/index.html") // 成功跳转页面路径
+                .failureUrl("/login.html") // 失败跳转页面路径
                 .and()
-                .formLogin();
+                .authorizeRequests() // 授权请求
+                .antMatchers("/login", "/index", "/", "/user/test").permitAll() // 这些路径所有人可以访问
+                .antMatchers("/user/**").hasRole("admin") // 角色为admin
+                .antMatchers("/user/**").authenticated() // 需要经过身份认证
+                .and()
+                .logout() // 登出
+                .deleteCookies("remove") // 登出后清除cookie
+                .and()
+                .csrf().disable() // 关闭csrf跨域
+                .httpBasic(); // http基本认证:每次请求api时都提供用户的username和password
 
     }
 
