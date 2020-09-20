@@ -31,6 +31,7 @@ public class UserController {
             //logger.error(e.toString());
             return Response.servers("查询用户详情操作有误！");
         }
+        //test
     }
 
 
