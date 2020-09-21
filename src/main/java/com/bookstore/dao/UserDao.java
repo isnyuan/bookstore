@@ -30,6 +30,13 @@ public interface UserDao {
     UserInfo findUser(String userCode);
 
     /**
+     * 功能描述: 通过账户查询用户信息
+     * @Author: lihuizong
+     * @Date: 2020/9/21 11:41
+     */
+    UserInfo findUserByAccount(String userAccount);
+
+    /**
      * 作者：李丹涛
      * 时间：2020/04/10晚上22：09分
      * 功能：查查询用户分页列表信息，userInfo用户信息

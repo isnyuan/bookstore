@@ -1,5 +1,7 @@
 package com.bookstore.config;
 
+import com.bookstore.service.impl.UserDetailsServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,7 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
- * 功能描述: 角色校验
+ * 功能描述: 角色权限校验
  * @Author: lihuizong
  * @Date: 2020/9/20 12:03
  */
@@ -17,12 +19,20 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @Configuration
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    @Autowired
+    private UserDetailsServiceImpl userDetailsService;
+
     @Override
     public void configure(WebSecurity web) throws Exception {
         //忽略.html .css .js .img等文件
         web.ignoring().antMatchers("/**.css", "/img/**", "/**.js");
     }
 
+    /**
+     * 功能描述: 授权规则
+     * @Author: lihuizong
+     * @Date: 2020/9/21 11:46
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -36,8 +46,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests() // 授权请求
                 .antMatchers("/login", "/index", "/", "/user/test").permitAll() // 这些路径所有人可以访问
-                .antMatchers("/user/**").hasRole("admin") // 角色为admin
-                .antMatchers("/user/**").authenticated() // 需要经过身份认证
+                .antMatchers("/user/**").authenticated() // 需要经过身份认证，即需要登录
+                .antMatchers("/user/**").hasRole("0") // 角色为0:代表管理员
                 .and()
                 .logout() // 登出
                 .deleteCookies("remove") // 登出后清除cookie
@@ -47,13 +57,22 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     }
 
+    /**
+     * 功能描述: 认证规则
+     * @Author: lihuizong
+     * @Date: 2020/9/21 11:46
+     */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth
-                .inMemoryAuthentication()
-                .passwordEncoder(new BCryptPasswordEncoder())
-                .withUser("zhangsan")
-                .password(new BCryptPasswordEncoder().encode("123"))
-                .roles("admin");
+        // 获得数据库中的用户信息
+        auth.userDetailsService(userDetailsService).passwordEncoder(new BCryptPasswordEncoder());
+
+        // 测试：用户信息存在内存中
+//        auth
+//                .inMemoryAuthentication()
+//                .passwordEncoder(new BCryptPasswordEncoder())
+//                .withUser("zhangsan")
+//                .password(new BCryptPasswordEncoder().encode("123"))
+//                .roles("admin");
     }
 }

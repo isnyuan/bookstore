@@ -92,9 +92,8 @@ public class UserController {
 
     @GetMapping("/test")
     public void test() {
-        SecurityUtils.getUserAuthentication();
-        System.out.println("************");
-        SecurityUtils.getCurrentPrincipal();
+        System.out.println(SecurityUtils.getCurrentUserCode());
+        System.out.println(SecurityUtils.getCurrentUserAccount());
     }
 
 }

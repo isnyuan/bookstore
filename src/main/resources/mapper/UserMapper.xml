@@ -47,6 +47,26 @@
         where user_code = #{userCode}
           and is_delete = 0
     </select>
+
+    <!--    通过账户查询用户信息-->
+    <select id="findUserByAccount" parameterType="java.lang.String" resultType="UserInfo">
+        select
+        user_code           as      userCode,
+        user_account        as      userAccount,
+        user_name           as      userName,
+        user_sex            as      userSex,
+        user_phone          as      userPhone,
+        user_email          as      userEmail,
+        user_id_card        as      userIdCard,
+        user_password       as      userPassword,
+        user_role           as      userRole,
+        user_image_path     as      userProfile,
+        version             as      version
+        from t_sys_user
+        where user_account = #{userAccount}
+          and is_delete = 0
+    </select>
+
 <!--    查询用户分页列表信息-->
     <select id="listUserByPage" parameterType="UserInfo" resultType="UserInfo">
         select

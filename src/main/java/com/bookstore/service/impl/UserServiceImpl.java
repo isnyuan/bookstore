@@ -6,6 +6,7 @@ import com.bookstore.entity.UserInfo;
 import com.bookstore.service.UserService;
 import com.bookstore.utils.PasswordUtils;
 import com.bookstore.utils.Response;
+import com.bookstore.utils.SecurityUtils;
 import com.bookstore.utils.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserDao userDao;
 
+    // 添加用户
     @Override
     //添加事务
     @Transactional(rollbackFor = Exception.class)
@@ -36,8 +38,8 @@ public class UserServiceImpl implements UserService {
             //删除标记：未删除0
             userInfo.setIsDelete("0");
             //设置创建者和修改者
-            //userInfo.setCreateUser(SecurityUtils.getCurrentUserId());
-            //userInfo.setLastUpdateUser(SecurityUtils.getCurrentUserId());
+            userInfo.setCreateUser(SecurityUtils.getCurrentUserCode());
+            userInfo.setLastUpdateUser(SecurityUtils.getCurrentUserCode());
             int flag = userDao.addUser(userInfo);
             if (flag > 0) {
                 return Response.success("新增用户成功！");
@@ -49,6 +51,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    // 查找用户通过用户编号
     @Override
     public Response findUser(String userCode) {
         UserInfo userInfo = userDao.findUser(userCode);
@@ -59,6 +62,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    // 查询所有用户信息
     @Override
     public Response listUser(UserInfo userInfo) {
         List<UserInfo> userInfoList = userDao.listUserByPage(userInfo);
@@ -69,11 +73,12 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    // 更新用户
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Response updateUser(UserInfo userInfo) {
         //设置当前修改者编码
-        //userInfo.setLastUpdateUser(SecurityUtils.getCurrentUserId());
+        userInfo.setLastUpdateUser(SecurityUtils.getCurrentUserCode());
         //加密密码
         userInfo.setUserPassword(PasswordUtils.generatePassword(userInfo.getUserPassword()));
         int count = userDao.updateUser(userInfo);
@@ -86,10 +91,11 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    // 删除用户
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Response deleteUser(UserDTO userDTO) {
-        //userDTO.setLastUpdateUser(SecurityUtils.getCurrentUserId());
+        userDTO.setLastUpdateUser(SecurityUtils.getCurrentUserCode());
         int count = userDao.deleteUser(userDTO);
         if (count > 0) {
             return Response.success("删除成功！");
@@ -100,11 +106,12 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    // 修改密码
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Response updatePassword(UserInfo userInfo) {
         //设置当前修改者编码
-        //userInfo.setLastUpdateUser(SecurityUtils.getCurrentUserId());
+        userInfo.setLastUpdateUser(SecurityUtils.getCurrentUserCode());
         //加密密码
         userInfo.setUserPassword(PasswordUtils.generatePassword(userInfo.getUserPassword()));
         int count = userDao.updatePassword(userInfo);

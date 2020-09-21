@@ -1,5 +1,6 @@
 package com.bookstore.utils;
 
+import com.bookstore.entity.SecurityUser;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -11,23 +12,33 @@ import org.springframework.security.core.context.SecurityContextHolder;
 public class SecurityUtils {
 
     /**
-     * 功能描述: 获取当前用户用户名
+     * 功能描述: 获取当前用户编号
      * @Author: lihuizong
      * @Date: 2020/9/20 14:29
      */
-    public static Authentication getUserAuthentication(){
-        System.out.println(SecurityContextHolder.getContext().getAuthentication().getAuthorities());
-        System.out.println(SecurityContextHolder.getContext().getAuthentication().getName());
-        return SecurityContextHolder.getContext().getAuthentication();
+    public static String getCurrentUserCode(){
+        SecurityUser securityUser = (SecurityUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        //System.out.println(securityUser.toString());
+        return securityUser.getUsercode();
     }
-    
+
     /**
-     * 功能描述: 获取当前用户信息
+     * 功能描述: 获取当前用户账户
+     * @Author: lihuizong
+     * @Date: 2020/9/21 14:27
+     */
+    public static String getCurrentUserAccount(){
+        SecurityUser securityUser = (SecurityUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return securityUser.getUsername();
+    }
+
+    /**
+     * 功能描述: 获取当前用户详细信息
      * @Author: lihuizong
      * @Date: 2020/9/20 14:30
      */
-    public static Object getCurrentPrincipal(){
-        System.out.println(getUserAuthentication().getPrincipal());
-        return getUserAuthentication().getPrincipal();
+    public static Object getCurrentUserDetail(){
+        SecurityUser securityUser = (SecurityUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return securityUser;
     }
 }
