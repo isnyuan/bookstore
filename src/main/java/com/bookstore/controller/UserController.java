@@ -5,6 +5,8 @@ import com.bookstore.entity.UserInfo;
 import com.bookstore.service.UserService;
 import com.bookstore.utils.Response;
 import com.bookstore.utils.SecurityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +15,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/user")
 @Validated
 public class UserController {
+
+    //日志
+    private final Logger logger = LoggerFactory.getLogger(GoodsController.class);
 
     @Autowired
     private UserService userService;
@@ -28,7 +33,7 @@ public class UserController {
         try {
             return userService.findUser(userCode);
         } catch (Exception e) {
-            //logger.error(e.toString());
+            logger.error(e.toString());
             return Response.servers("查询用户详情操作有误！");
         }
     }
@@ -43,7 +48,7 @@ public class UserController {
         try {
             return userService.addUser(userInfo);
         } catch (Exception e) {
-            //logger.error(e.toString());
+            logger.error(e.toString());
             return Response.servers("新增用户操作有误！");
         }
     }

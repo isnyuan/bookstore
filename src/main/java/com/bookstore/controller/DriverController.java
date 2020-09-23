@@ -4,6 +4,8 @@ import com.bookstore.entity.DriverDTO;
 import com.bookstore.entity.DriverInfo;
 import com.bookstore.service.DriverService;
 import com.bookstore.utils.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 @RequestMapping("/driver")
 public class DriverController {
+
+    //日志
+    private final Logger logger = LoggerFactory.getLogger(GoodsController.class);
 
     @Autowired
     private DriverService driverService;
@@ -39,7 +44,7 @@ public class DriverController {
             driverInfo.setRole(ROLE);
             return driverService.addDriver(driverInfo);
         } catch (Exception e) {
-            //logger.error(e.toString());
+            logger.error(e.toString());
             return Response.servers("新增司机操作有误！");
         }
     }
@@ -55,7 +60,7 @@ public class DriverController {
         try {
             return driverService.findDriver(driverCode);
         } catch (Exception e) {
-            //logger.error(e.toString());
+            logger.error(e.toString());
             return Response.servers("查询司机信息有误！");
         }
     }
@@ -71,7 +76,7 @@ public class DriverController {
         try {
             return driverService.listDriver(driverInfo);
         } catch (Exception e) {
-            //logger.error(e.toString());
+            logger.error(e.toString());
             return Response.servers("分页查询司机信息有误！");
         }
     }
@@ -87,7 +92,7 @@ public class DriverController {
         try {
             return driverService.updateDriver(driverInfo);
         } catch (Exception e) {
-            //logger.error(e.toString());
+            logger.error(e.toString());
             return Response.servers("修改司机信息有误！");
         }
     }
@@ -103,7 +108,7 @@ public class DriverController {
         try {
             return driverService.deleteDriver(driverDTO);
         } catch (Exception e) {
-            //logger.error(e.toString());
+            logger.error(e.toString());
             return Response.servers("司机信息有误！");
         }
     }

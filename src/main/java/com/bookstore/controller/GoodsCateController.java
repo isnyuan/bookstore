@@ -3,6 +3,8 @@ package com.bookstore.controller;
 import com.bookstore.entity.GoodsCateInfo;
 import com.bookstore.service.GoodsCateService;
 import com.bookstore.utils.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/goodsCate")
 @Validated
 public class GoodsCateController {
+
+    //日志
+    private final Logger logger = LoggerFactory.getLogger(GoodsController.class);
 
     @Autowired
     private GoodsCateService goodsCateService;
@@ -27,7 +32,7 @@ public class GoodsCateController {
         try {
             return goodsCateService.addGoodsCate(goodsCateInfo);
         } catch (Exception e) {
-            //logger.error(e.toString());
+            logger.error(e.toString());
             return Response.servers("新增商品分类有误！");
         }
     }
@@ -43,7 +48,7 @@ public class GoodsCateController {
         try {
             return goodsCateService.findGoodsCate(goodsCateCode);
         } catch (Exception e) {
-            //logger.error(e.toString());
+            logger.error(e.toString());
             return Response.servers("查询商品分类详情操作有误！");
         }
     }
@@ -58,7 +63,7 @@ public class GoodsCateController {
         try {
             return goodsCateService.listGoodsCate();
         } catch (Exception e) {
-            //logger.error(e.toString());
+            logger.error(e.toString());
             return Response.servers("查询商品分类列表信息操作有误！");
         }
     }
@@ -74,7 +79,7 @@ public class GoodsCateController {
         try {
             return goodsCateService.updateGoodsCate(goodsCateInfo);
         } catch (Exception e) {
-            //logger.error(e.toString());
+            logger.error(e.toString());
             return Response.servers("修改商品分类操作有误！");
         }
     }
@@ -90,7 +95,7 @@ public class GoodsCateController {
         try {
             return goodsCateService.deleteGoodsCate(goodsCateInfo);
         } catch (Exception e) {
-            //logger.error(e.toString());
+            logger.error(e.toString());
             return Response.servers("删除商品操作有误！");
         }
     }

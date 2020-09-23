@@ -2,6 +2,8 @@ package com.bookstore.controller;
 
 import com.bookstore.service.AreaService;
 import com.bookstore.utils.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/area")
 @Validated
 public class AreaController {
+
+    //日志
+    private final Logger logger = LoggerFactory.getLogger(GoodsController.class);
 
     @Autowired
     private AreaService areaService;
@@ -27,7 +32,7 @@ public class AreaController {
         try {
             return areaService.listArea(parentCode);
         } catch (Exception e) {
-            //logger.error(e.toString());
+            logger.error(e.toString());
             return Response.servers("查询省市区操作有误！");
         }
     }
