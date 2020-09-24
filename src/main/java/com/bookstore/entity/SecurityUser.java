@@ -16,15 +16,25 @@ public class SecurityUser implements Serializable, UserDetails {
     private String usercode;
     private String username;
     private String password;
+    private String role;
     private Collection<? extends GrantedAuthority> authorities;
 
 
 
-    public SecurityUser(String userCode, String userAccount, String userPassword, Collection<? extends GrantedAuthority> authorities) {
+    public SecurityUser(String userCode, String userAccount, String userPassword, String role, Collection<? extends GrantedAuthority> authorities) {
         this.usercode = userCode;
         this.username = userAccount;
         this.password = userPassword;
+        this.role = role;
         this.authorities = authorities;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public String getUsercode() {
@@ -70,13 +80,4 @@ public class SecurityUser implements Serializable, UserDetails {
         return true;
     }
 
-    @Override
-    public String toString() {
-        return "SecurityUser{" +
-                "usercode='" + usercode + '\'' +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", authorities=" + authorities +
-                '}';
-    }
 }

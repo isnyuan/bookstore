@@ -35,6 +35,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String userAccount) throws UsernameNotFoundException {
+        if (userAccount == null || "".equals(userAccount)) {
+            throw new RuntimeException("用户不能为空");
+        }
         UserInfo userInfo = userDao.findUserByAccount(userAccount);
 
         if (userInfo == null) {
@@ -44,7 +47,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             // 添加角色
             authorities.add(new SimpleGrantedAuthority("ROLE_"+userInfo.getUserRole()));
             // 添加用户信息
-            SecurityUser user = new SecurityUser(userInfo.getUserCode(), userInfo.getUserAccount(), userInfo.getUserPassword(), authorities);
+            SecurityUser user = new SecurityUser(userInfo.getUserCode(), userInfo.getUserAccount(), userInfo.getUserPassword(), userInfo.getUserRole(), authorities);
             //System.out.println("管理员信息："+user.getUsername()+"   "+userInfo.getUserPassword()+"  "+user.getAuthorities());
             return user;
         }

@@ -33,6 +33,16 @@ public class SecurityUtils {
     }
 
     /**
+     * 功能描述: 获取当前用户角色
+     * @Author: lihuizong
+     * @Date: 2020/9/21 14:27
+     */
+    public static String getCurrentUserRole(){
+        SecurityUser securityUser = (SecurityUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return securityUser.getRole();
+    }
+
+    /**
      * 功能描述: 获取当前用户详细信息
      * @Author: lihuizong
      * @Date: 2020/9/20 14:30
