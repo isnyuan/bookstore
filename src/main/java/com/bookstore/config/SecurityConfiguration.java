@@ -29,13 +29,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
+    /**
+     *  model 对象（类和结构体）和 JSON 之间的转换。
+     */
     @Autowired
     private ObjectMapper objectMapper;
 
     @Override
     public void configure(WebSecurity web) throws Exception {
         //忽略.html .css .js .img等文件
-        web.ignoring().antMatchers("/**.css", "/img/**", "/**.js");
+        //web.ignoring().antMatchers("/**.css", "/img/**", "/**.js");
     }
 
     /**

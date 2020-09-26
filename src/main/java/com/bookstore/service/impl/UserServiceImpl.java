@@ -3,11 +3,13 @@ package com.bookstore.service.impl;
 import com.bookstore.dao.UserDao;
 import com.bookstore.entity.UserDTO;
 import com.bookstore.entity.UserInfo;
+import com.bookstore.page.PageUtils;
 import com.bookstore.service.UserService;
 import com.bookstore.utils.PasswordUtils;
 import com.bookstore.utils.Response;
 import com.bookstore.utils.SecurityUtils;
 import com.bookstore.utils.StringUtil;
+import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,14 +64,15 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    // 查询所有用户信息
+    // 查询用户信息分页列表
     @Override
     public Response listUser(UserInfo userInfo) {
         List<UserInfo> userInfoList = userDao.listUserByPage(userInfo);
         if (userInfoList.size() == 0) {
             return Response.error("未查询到相关用户列表信息！");
         } else {
-            return Response.success("查询成功！", userInfoList);
+            //PageHelper.startPage(pageNum, pageSize);
+            return Response.success("查询成功！", PageUtils.getPageInfo(userInfoList));
         }
     }
 
