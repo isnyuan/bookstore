@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bookstore.dao.MenuDao">
+<!--    查询全部菜单列表-->
+    <select id="listMenu" resultType="MenuInfo">
+        select
+        menu_name       as      menuName,
+        menu_code       as      menuCode,
+        version         as      version,
+        menu_path       as      menuPath
+        from t_sys_menu
+        where is_delete = 0
+        order by menuCode
+    </select>
+<!--    根据角色查询首页菜单-->
+    <select id="listMenuHome" resultType="MenuInfo">
+        select
+        menu_name       as      menuName,
+        menu_code       as      menuCode,
+        version         as      version,
+        menu_path       as      menuPath
+        from t_sys_menu
+        where is_delete = 0
+        <if test="userRole == 1">
+            and menu_code in ('100861116','100861117','100861119','100861120')
+        </if>
+        order by menuCode
+    </select>
+<!--    新增菜单-->
+    <insert id="addMenu" parameterType="MenuInfo">
+        insert into t_sys_menu
+        (
+        menu_code,          menu_name,          menu_path,
+        menu_remark,        is_delete,          create_user,
+        create_time,        last_update_user,   last_update_time,
+        version
+        )
+        values
+        (
+        #{menuCode},        #{menuName},        #{menuPath},
+        #{menuRemark},      #{isDelete},        #{createUser},
+        now(),              #{lastUpdateUser},  now(),
+        0
+        )
+    </insert>
+<!--    查看菜单详情-->
+    <select id="findMenu" parameterType="java.lang.String" resultType="MenuInfo">
+        select
+        menu_code       as      menuCode,
+        menu_name       as      menuName,
+        menu_path       as      menuPath,
+        menu_remark     as      menuRemark
+        from t_sys_menu
+        where menu_code =   #{menuCode}
+    </select>
+<!--    修改菜单-->
+    <update id="updateMenu" parameterType="MenuInfo">
+        update t_sys_menu
+        set
+        version                 =       version + 1,
+        last_update_user        =       #{lastUpdateUser},
+        last_update_time        =       now(),
+        menu_path               =       #{menuPath},
+        menu_name               =       #{menuName},
+        menu_remark             =       #{menuRemark}
+        where   menu_code   =   #{menuCode}
+        and     version     =   #{version}
+    </update>
+<!--    删除菜单-->
+    <update id="deleteMenu" parameterType="MenuInfo">
+        update  t_sys_menu
+        set
+        version                 =       version + 1,
+        last_update_user        =       #{lastUpdateUser},
+        last_update_time        =       now(),
+        is_delete               =       1
+        where menu_code   =   #{menuCode}
+    </update>
+</mapper>
