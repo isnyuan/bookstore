@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Validated
-@RequestMapping("/driver")
+@RequestMapping("/pc/driver")
 public class DriverController {
 
     //日志

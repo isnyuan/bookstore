@@ -20,7 +20,7 @@ import javax.annotation.Resource;
  */
 
 @RestController
-@RequestMapping("/store")
+@RequestMapping("/pc/store")
 @Validated
 public class StoreController {
 

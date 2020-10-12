@@ -20,7 +20,7 @@ import javax.annotation.Resource;
  */
 
 @RestController
-@RequestMapping("/menu")
+@RequestMapping("/pc/menu")
 @Validated
 public class MenuController {
 

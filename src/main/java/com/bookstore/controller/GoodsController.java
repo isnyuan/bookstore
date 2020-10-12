@@ -21,7 +21,7 @@ import javax.annotation.Resource;
  */
 
 @RestController
-@RequestMapping("/goods")
+@RequestMapping("/pc/goods")
 @Validated
 public class GoodsController {
 
