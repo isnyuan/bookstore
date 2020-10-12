@@ -1,6 +1,6 @@
 package com.bookstore.config;
 
-import com.bookstore.service.impl.UserDetailsServiceImpl;
+import com.bookstore.admin.service.impl.UserDetailsServiceImpl;
 import com.bookstore.utils.Response;
 import com.bookstore.utils.SecurityUtils;
 import com.bookstore.utils.StringUtil;

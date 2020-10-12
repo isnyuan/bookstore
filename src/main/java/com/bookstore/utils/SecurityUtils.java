@@ -1,7 +1,6 @@
 package com.bookstore.utils;
 
-import com.bookstore.entity.SecurityUser;
-import org.springframework.security.core.Authentication;
+import com.bookstore.admin.entity.SecurityUser;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 /**

@@ -19,9 +19,9 @@ spring:
 # MyBatis配置
 mybatis:
   # 搜索指定包别名
-  typeAliasesPackage: com.bookstore.entity
+  typeAliasesPackage: com.bookstore.admin.entity
   # 配置mapper的扫描，找到所有的mapper.xml映射文件
-  mapperLocations: classpath*:mybatis/mapper/*Mapper.xml
+  mapperLocations: classpath*:mybatis/mapper/*/*Mapper.xml
 
 # security 使能
 security:
