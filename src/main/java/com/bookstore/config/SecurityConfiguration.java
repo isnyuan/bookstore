@@ -1,6 +1,7 @@
 package com.bookstore.config;
 
 import com.bookstore.admin.service.impl.UserDetailsServiceImpl;
+import com.bookstore.app.component.VerifyCodeFilter;
 import com.bookstore.utils.Response;
 import com.bookstore.utils.SecurityUtils;
 import com.bookstore.utils.StringUtil;
@@ -13,6 +14,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -35,6 +37,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private VerifyCodeFilter verifyCodeFilter;
+
     @Override
     public void configure(WebSecurity web) throws Exception {
         //忽略.html .css .js .img等文件
@@ -50,6 +55,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http.cors().and().csrf().disable();
+        // 处理验证码
+        http.addFilterBefore(verifyCodeFilter, UsernamePasswordAuthenticationFilter.class);
         http.formLogin()
                 //登录成功处理逻辑，返回json
                 .successHandler((request,response,authentication) -> {
@@ -71,10 +78,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     HashMap<String, String> access_token = new HashMap<>();
                     access_token.put("access_token", token);
                     access_token.put("role", null);
-                    Response success = Response.success("登录失败！", access_token);
+                    Response failure = new Response(400+"", "登录失败，账户或用户名错误！", access_token);
                     response.setContentType("application/json;charset=utf-8");
                     PrintWriter out = response.getWriter();
-                    out.write(objectMapper.writeValueAsString(success));
+                    out.write(objectMapper.writeValueAsString(failure));
                     out.flush();
                     out.close();
                 })
