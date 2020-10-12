@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bookstore.dao.OrderDao">
+<!--    查询订单详情接口-->
+    <select id="findOrder" parameterType="java.lang.String" resultType="OrderInfo">
+        select
+        o.user_code           as      userCode,
+        d.order_code          as      orderCode,
+        d.goods_code          as      goodsCode,
+        g.goods_name          as      goodsName,
+        d.goods_count         as      pucharNum,
+        d.goods_sum_price     as      sumPrice,
+        g.goods_price         as      goodsPrice,
+        g.goods_cost_price    as      goodsCostPrice
+        from
+        t_sys_order o,    t_sys_goods g,  t_sys_order_detail d
+        where   d.is_delete = 0
+        and     d.goods_code = g.goods_code
+        and     d.order_code = #{orderCode}
+        and     d.order_code = o.order_code
+    </select>
+
+    <!--    分页查询订单接口（店长查自己门下）-->
+    <select id="listOrderStoreByPage" parameterType="OrderDTO" resultType="OrderInfo">
+        select
+        user_name       as      payUser,
+        user_phone      as      payPhone,
+        order_code      as      orderCode,
+        sum_price       as      sumPrice,
+        order_active    as      orderActive,
+        store_code      as      storeCode,
+        user_name       as      userName,
+        user_phone      as      userPhone,
+        a.version       as      version,
+        pay_time        as      payTime
+        from    t_sys_order a,    t_sys_user b
+        where   a.is_delete     =   0
+        and     a.user_code     =   b.user_code
+        and     b.user_code     =   #{userCode}
+        <if test="userName != null and userName != ''">
+            and user_name like concat('%', #{userName}, '%')
+        </if>
+        <if test="userPhone != null and userPhone != ''">
+            and user_phone like concat('%', #{userPhone}, '%')
+        </if>
+        <if test="orderCode != null and orderCode != ''">
+            and order_code like concat('%', #{orderCode}, '%')
+        </if>
+        <if test="orderActive != null and orderActive != ''">
+            and orderActive = #{order_active}
+        </if>
+        <if test="payStartTime != null and payStartTime != ''">
+            and pay_time &gt;= #{payStartTime}
+        </if>
+        <if test="payEndTime != null and payEndTime != ''">
+            and pay_time &lt;= #{payEndTime}
+        </if>
+        order by a.create_time
+    </select>
+<!--    修改订单状态接口-->
+    <update id="updateOrderActive" parameterType="OrderInfo">
+        update  t_sys_order
+        set
+        order_active        =       #{orderActive},
+        version             =       version + 1,
+        last_update_user    =       #{lastUpdateUser},
+        last_update_time    =       now()
+        where (order_code,version) in
+        <foreach collection="mapList" item="list" open="(" separator="," close=")">
+            (#{list.orderCode},#{list.version})
+        </foreach>
+    </update>
+</mapper>
