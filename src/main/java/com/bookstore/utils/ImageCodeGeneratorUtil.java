@@ -11,6 +11,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Random;
 
+/**
+ * 功能描述: 验证码工具包
+ * @Author: lihuizong
+ * @Date: 2020/10/12 20:13
+ */
 public class ImageCodeGeneratorUtil {
 
     public static ImageCode createCode() throws IOException {
