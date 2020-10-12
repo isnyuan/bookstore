@@ -1,10 +1,8 @@
 package com.bookstore.app.component;
 
-import com.alibaba.druid.util.StringUtils;
 import com.bookstore.utils.Response;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 

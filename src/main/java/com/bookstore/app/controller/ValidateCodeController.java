@@ -3,7 +3,6 @@ package com.bookstore.app.controller;
 import com.bookstore.app.entity.ImageCode;
 import com.bookstore.utils.ImageCodeGeneratorUtil;
 import com.bookstore.utils.Response;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,7 +13,7 @@ import java.util.HashMap;
 @RestController
 public class ValidateCodeController {
 
-    @GetMapping("/code/image")
+    @PostMapping("/code/image")
     public Response createCode(HttpServletRequest request) {
         try {
             // 获取验证码

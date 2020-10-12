@@ -2,7 +2,6 @@ package com.bookstore.utils;
 
 import com.bookstore.app.entity.ImageCode;
 import org.springframework.util.Base64Utils;
-import org.springframework.web.context.request.ServletWebRequest;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
