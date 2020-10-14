@@ -84,12 +84,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     out.write(objectMapper.writeValueAsString(failure));
                     out.flush();
                     out.close();
-                })
-                .and()
-                .authorizeRequests() // 授权请求
-                .antMatchers().permitAll() // 这些路径所有人可以访问
-                .antMatchers("/user/**").authenticated() // 需要经过身份认证，即需要登录
-                .antMatchers("/user/**").hasRole("0"); // 角色为0:代表管理员
+                });
+                //.and()
+                //.authorizeRequests() // 授权请求
+                //.antMatchers().permitAll() // 这些路径所有人可以访问
+                //.antMatchers("/user/**").authenticated() // 需要经过身份认证，即需要登录
+                //.antMatchers("/user/**").hasRole("0"); // 角色为0:代表管理员
 
 //        http
 //                .formLogin() // 登录

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bookstore.app.dao.ADriverDao">
+<!--    查询司机负责门店，店长的相关信息-->
+    <select id="findDriverStore" parameterType="java.lang.String" resultType="ADriverInfo">
+        select
+        a1.store_code      as      storeCode,
+        a1.store_name      as      storeName,
+        a4.area_name       as      provinceName,
+        a5.area_name       as      cityName,
+        a6.area_name       as      areaName,
+        a1.address         as      address,
+        a3.user_name       as      userName,
+        a1.phone           as      phone
+        from
+        t_sys_store a1, t_sys_driver a2, t_sys_user a3,
+        t_sys_area  a4, t_sys_area   a5, t_sys_area a6
+        where   a2.driver_code      =       #{userCode}
+        and     a1.user_code        =       a3.user_code
+        and     a1.province_code    =       a4.area_code
+        and     a1.city_code        =       a5.area_code
+        and     a1.area_code        =       a6.area_code
+        and     a2.province_code    =       a1.province_code
+        and     a2.city_code        =       a1.city_code
+        and     a2.area_code        =       a1.area_code
+        and     a1.is_delete        =       0
+    </select>
+</mapper>

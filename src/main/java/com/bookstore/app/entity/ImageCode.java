@@ -4,6 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 功能描述: 验证码实体类
+ * @Author: lihuizong
+ * @Date: 2020/10/14 19:23
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
