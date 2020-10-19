@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 
 @RestController
-@RequestMapping("/driverHome")
+@RequestMapping("/app/driverHome")
 @Validated
 public class ADriverController {
 

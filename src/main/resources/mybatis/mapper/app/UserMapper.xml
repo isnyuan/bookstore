@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bookstore.app.dao.AUserDao">
+<!--    查询当前登录角色-->
+    <select id="checkRole" parameterType="java.lang.String" resultType="java.lang.String">
+        select user_role
+        from t_sys_user
+        where user_code = #{userCode}
+    </select>
+<!--    用户表基本信息-->
+    <select id="findUser" parameterType="java.lang.String" resultType="AUserInfo">
+        select
+        user_name             as          userName,
+        user_image_path       as          userImagePath,
+        user_role             as          role
+        from    t_sys_user
+        where user_code = #{userCode}
+    </select>
+<!--    查找店长信息-->
+    <select id="findStore" parameterType="java.lang.String" resultType="AUserInfo">
+        select
+        store_code      as      storeCode,
+        store_name      as      storeName,
+        invite_code     as      inviteCode,
+        a1.area_name    as      provinceName,
+        a2.area_name    as      cityName,
+        a3.area_name    as      areaName,
+        address         as      address,
+        s.version       as      version
+        from    t_sys_store s, t_sys_area a1, t_sys_area a2, t_sys_area a3
+        where   s.user_code     =   #{userCode}
+        and     s.province_code =   a1.area_code
+        and     s.city_code     =   a2.area_code
+        and     s.area_code     =   a3.area_code
+    </select>
+<!--    查找客户信息-->
+    <select id="findCustomer" parameterType="java.lang.String" resultType="AUserInfo">
+        select
+        store_code      as      storeCode,
+        store_name      as      storeName,
+        a1.area_name    as      provinceName,
+        a2.area_name    as      cityName,
+        a3.area_name    as      areaName,
+        address         as      address,
+        c.version       as      version
+        from    t_sys_customer c,   t_sys_store s,
+                t_sys_area a1,      t_sys_area a2, t_sys_area a3
+        where   c.user_code     =   #{userCode}
+        and     c.invite_code   =   s.invite_code
+        and     s.province_code =   a1.area_code
+        and     s.city_code     =   a2.area_code
+        and     s.area_code     =   a3.area_code
+    </select>
+<!--    查找司机信息-->
+    <select id="findDriver" parameterType="java.lang.String" resultType="AUserInfo">
+        select
+        u.user_phone    as      phone,
+        user_name       as      driverName,
+        d.version       as      version
+        from    t_sys_user u, t_sys_driver d
+        where   d.driver_code   =   #{userCode}
+        and     d.driver_code   =   u.user_code
+    </select>
+<!--    查询原加密密码-->
+    <select id="findUserPassword" parameterType="java.lang.String" resultType="java.lang.String">
+        select
+        user_password   as  userPassword
+        from    t_sys_user
+        where   user_code = #{userCode}
+    </select>
+<!--    修改密码-->
+    <update id="updateUserPassword" parameterType="AUserInfo">
+        update t_sys_user
+        set
+        user_password       =       #{userNewPassword},
+        version             =       version + 1,
+        last_update_user    =       #{lastUpdateUser},
+        last_update_time    =       now()
+        where   user_code    =      #{userCode}
+        and     version      =      #{version}
+    </update>
+</mapper>
