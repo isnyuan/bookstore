@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bookstore.app.dao.AOrderDao">
+<!--    更新商品状态-->
+    <update id="updateGoodsActice" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="" open="" separator=";" close=";">
+            update  t_sys_goods
+            set
+            goods_active        =       0,
+            version             =       version + 1,
+            last_update_user    =       #{item.lastUpdateUser},
+            last_update_time    =       now()
+            where   goods_code  =       #{item.goodsCode}
+        </foreach>
+    </update>
+<!--    查看商品库存-->
+   <select id="findGoodsStock" parameterType="AOrderDTO" resultType="java.lang.String">
+        select
+        goods_stock  as goodsStock
+        from t_sys_goods
+        where goods_code in
+       <foreach collection="goodsCodeList" item="goodsCode" index="index" open="(" separator="," close=")">
+           #{goodsCode}
+       </foreach>
+   </select>
+<!--    查看商品编号-->
+    <select id="findGoodsCode" parameterType="java.lang.String" resultType="java.lang.String">
+        select
+        goods_code
+        from    t_sys_order_detail
+        where   order_code = #{orderCode}
+    </select>
+<!--    查看商品购买数量-->
+    <select id="findGoodsCount" parameterType="java.lang.String" resultType="java.lang.String">
+        select
+        goods_count
+        from    t_sys_order_detail
+        where   order_code = #{orderCode}
+    </select>
+<!--    查看商品销量-->
+    <select id="findGoodsSallNum" parameterType="java.util.List" resultType="java.lang.String">
+        select
+        goods_sall_num  as goodsSallNum
+        from t_sys_goods
+        where goods_code in
+        <foreach collection="goodsCodeList" item="goodsCode" index="index" open="(" separator="," close=")">
+            #{goodsCode}
+        </foreach>
+    </select>
+<!--    修改库存-->
+    <update id="updateGoodsStock" parameterType="AOrderDTO">
+        <foreach collection="stockMapList" item="list" index="" open="" separator=";" close=";">
+            update  t_sys_goods
+            set
+            goods_stock         =       #{list.goodsStock},
+            version             =       version + 1,
+            last_update_user    =       #{list.lastUpdateUser},
+            last_update_time    =       now()
+            where   goods_code  =       #{list.goodsCode}
+        </foreach>
+    </update>
+<!--    修改销量-->
+    <update id="updateSallNum" parameterType="java.util.List">
+        <foreach collection="mapList" item="list" index="" open="" separator=";" close=";">
+            update  t_sys_goods
+            set
+            goods_sall_num      =       #{list.goodsSallNum},
+            version             =       version + 1,
+            last_update_user    =       #{list.lastUpdateUser},
+            last_update_time    =       now()
+            where   goods_code  =       #{list.goodsCode}
+        </foreach>
+    </update>
+<!--    删除购物车接口-->
+    <update id="deleteShopCar" parameterType="AOrderDTO">
+        update  t_sys_shop_car
+        set
+        is_delete           =       1,
+        version             =       version + 1,
+        last_update_user    =       #{lastUpdateUser},
+        last_update_time    =       now()
+        where
+        shop_car_code in
+        <foreach collection="shopCarCodeList" item="shopCarCode" index="index" open="(" separator="," close=")">
+            #{shopCarCode}
+        </foreach>
+    </update>
+<!--    新增订单接口-->
+    <insert id="addOrder" parameterType="AOrderInfo">
+        insert into t_sys_order
+        (
+        order_code,         user_code,          puchar_num,
+        store_code,         sum_price,          pay_time,
+        order_active,       pay_active,         is_delete,
+        create_user,        create_time,        last_update_user,
+        last_update_time,   version
+        )
+        values
+        (
+        #{orderCode},          #{userCode},           #{pucharNum},
+        #{storeCode},          #{sumPrice},           now(),
+        #{orderActive},        #{payActive},          0,
+        #{createUser},         now(),                 #{lastUpdateUser},
+        now(),                 0
+        )
+    </insert>
+<!--    新增订单详情接口-->
+    <insert id="addOrderDetail" parameterType="AOrderInfo">
+        insert into t_sys_order_detail
+        (
+        order_detail_code,      order_code,             goods_code,
+        goods_count,            is_delete,              create_user,
+        create_time,            last_update_user,       last_update_time,
+        version,                goods_sum_price
+        )
+        values
+        <foreach collection="mapList" item="list" separator=",">
+        (
+        #{list.orderDetailCode},    #{list.orderCode},              #{list.goodsCode},
+        #{list.goodsCount},         0,                              #{list.createUser},
+        now(),                      #{list.lastUpdateUser},         now(),
+        0,                          #{list.goodsSumPrice}
+        )
+        </foreach>
+    </insert>
+<!--    查询订单列表接口-->
+    <select id="listOrderByPage" parameterType="java.lang.String" resultType="AOrderInfo">
+        select
+        order_code        as        orderCode,
+        order_active      as        orderActive,
+        sum_price         as        sumPrice,
+        puchar_num        as        pucharNum,
+        pay_time          as        payTime,
+        o.version         as        version,
+        a1.area_name      as        provinceName,
+        a2.area_name      as        cityName,
+        a3.area_name      as        areaName,
+        s.address         as        address
+        from t_sys_order o, t_sys_store s,
+        t_sys_area a1, t_sys_area a2, t_sys_area a3
+        where   o.is_delete = 0
+        <if test="orderActive != null and orderActive != ''">
+            and order_active = #{orderActive}
+        </if>
+        and     a1.area_code    =   s.province_code
+        and     a2.area_code    =   s.city_code
+        and     a3.area_code    =   s.area_code
+        and     o.store_code    =   s.store_code
+        and     o.user_code     =   #{currentUserCode}
+        order by pay_time desc
+    </select>
+<!--    查询订单详情-->
+    <select id="listOrderDetail" resultType="AOrderInfo">
+        select
+        g.goods_name            as      goodsName,
+        g.goods_image_path      as      goodsImagePath,
+        g.goods_introduce       as      goodsIntroduce,
+        g.goods_price           as      goodsPrice,
+        d.goods_count           as      goodsCount,
+        d.goods_code            as      goodsCode,
+        d.order_code            as      orderCode
+        from t_sys_order_detail d, t_sys_goods g
+        where   d.goods_code    =   g.goods_code
+        and     d.is_delete     =   0
+    </select>
+<!--    修改订单状态接口-->
+    <update id="updateOrderActive" parameterType="AOrderInfo">
+        update t_sys_order
+        set
+        order_active            =       #{orderActive},
+        version                 =       version + 1,
+        last_update_user        =       #{lastUpdateUser},
+        last_update_time        =       now()
+        where   order_code  =   #{orderCode}
+        and     version     =   #{version}
+    </update>
+<!--    查询商品库存-->
+    <select id="ListGoodsStock" parameterType="java.util.List" resultType="java.lang.String">
+        select
+        goods_stock  as goodsStock
+        from t_sys_goods
+        where goods_code in
+        <foreach collection="goodsCodeList" item="goodsCode" index="index" open="(" separator="," close=")">
+            #{goodsCode}
+        </foreach>
+    </select>
+<!--    更新库存-->
+    <update id="updateStock" parameterType="java.util.List">
+        <foreach collection="mapList" item="list" index="" open="" separator=";" close=";">
+            update  t_sys_goods
+            set
+            goods_stock         =       #{list.goodsStock},
+            version             =       version + 1,
+            last_update_user    =       #{list.lastUpdateUser},
+            last_update_time    =       now()
+            where   goods_code  =       #{list.goodsCode}
+        </foreach>
+    </update>
+<!--    查询订单详情接口-->
+    <select id="orderDetail" resultType="AOrderInfo">
+        select
+        g.goods_name          as      goodsName,
+        g.goods_price         as      goodsPrice,
+        g.goods_image_path    as      goodsImagePath,
+        d.goods_count         as      goodsCount,
+        d.goods_sum_price     as      goodsSumPrice,
+        d.goods_code          as      goodsCode
+        from t_sys_order_detail d, t_sys_goods g
+        where   d.goods_code = g.goods_code
+        and     d.is_delete  = 0
+    </select>
+<!--    查询商品评价列表-->
+    <select id="listGoodsForEvaluate" parameterType="java.lang.String" resultType="AOrderInfo">
+        select
+        g.goods_code            as      goodsCode,
+        g.goods_image_path      as      goodsImagePath
+        from t_sys_order_detail d, t_sys_goods g
+        where d.goods_code  =   g.goods_code
+        and   d.order_code  =   #{orderCode}
+    </select>
+<!--    订单评价完成修改为已评价状态-->
+    <update id="updateOrderEvaluateActive" parameterType="AOrderInfo">
+        update t_sys_order
+        set
+        order_active            =       #{orderActive},
+        version                 =       version + 1,
+        last_update_user        =       #{lastUpdateUser},
+        last_update_time        =       now()
+        where   order_code      =       #{orderCode}
+    </update>
+<!--    新增评价内容-->
+    <insert id="addGoodsEvaluate" parameterType="java.util.List">
+        <foreach collection="evaluateListMap" item="list" separator=";" close=";">
+            insert into t_sys_goods_evaluate
+            (
+            goods_evaluate_code,        order_code,                 goods_evaluate_score,
+            goods_evaluate_content,     goods_evaluate_time,        goods_code,
+            store_code,                 is_delete,                  create_user,
+            create_time,                last_update_user,           last_update_time,
+            version,                    goods_evaluate_user
+            )
+            values
+            (
+            #{list.evaluateCode},       #{list.orderCode},          #{list.evaluateScore},
+            #{list.evaluateContent},    now(),                      #{list.goodsCode},
+            #{list.goodsStore},         0,                          #{list.createUser},
+            now(),                      #{list.lastUpdateUser},     now(),
+            0,                          #{list.goodsEvaluateUser}
+            )
+        </foreach>
+    </insert>
+<!--    新增评价图片-->
+    <insert id="addGoodsEvaluateImage" parameterType="java.util.List">
+        <foreach collection="evaluateImageListMap" item="list" separator=";" close=";">
+            insert into t_sys_goods_evaluate_image
+            (
+            evaluate_image_code,        goods_evaluate_code,    goods_evaluate_image,
+            is_delete,                  create_user,            create_time,
+            last_update_user,           last_update_time,       version,
+            image_sort_num
+            )
+            values
+            (
+            #{list.evaluateImageCode},  #{list.evaluateCode},   #{list.goodsEvaluateImage},
+            0,                          #{list.createUser},     now(),
+            #{list.lastUpdateUser},     now(),                  0,
+            #{list.imageSortNum}
+            )
+        </foreach>
+    </insert>
+<!--    查询各个商品平均星级-->
+    <select id="findGoodsScore" resultType="AEvaluateInfo">
+        select
+        goods_code                      as          goodsCode,
+        avg(goods_evaluate_score)       as          avgScore
+        from t_sys_goods_evaluate
+        group by goods_code
+    </select>
+<!--    更新产品的评价等级-->
+    <update id="updateAvgGoodsScore" parameterType="java.util.List">
+        <foreach collection="avgStarList" item="list" separator=";" close=";">
+            update  t_sys_goods
+            set
+            goods_evaluate_score    =       #{list.avgScore},
+            version                 =       version + 1,
+            last_update_user        =       #{list.lastUpdateUser},
+            last_update_time        =       now()
+            where
+            goods_code  =   #{list.goodsCode}
+        </foreach>
+    </update>
+<!--    查询订单列表接口-->
+    <select id="findOrder" parameterType="java.lang.String" resultType="AOrderInfo">
+        select
+        order_code        as        orderCode,
+        order_active      as        orderActive,
+        sum_price         as        sumPrice,
+        puchar_num        as        pucharNum,
+        pay_time          as        payTime,
+        o.version         as        version,
+        a1.area_name      as        provinceName,
+        a2.area_name      as        cityName,
+        a3.area_name      as        areaName,
+        s.address         as        address,
+        u.user_code       as        userCode,
+        u.user_name       as        userName,
+        u.user_phone      as        phone,
+        s.store_name      as        storeName
+        from t_sys_order o, t_sys_store s, t_sys_user u,
+        t_sys_area a1, t_sys_area a2, t_sys_area a3
+        where   o.is_delete = 0
+        and     a1.area_code    =   s.province_code
+        and     a2.area_code    =   s.city_code
+        and     a3.area_code    =   s.area_code
+        and     u.user_code     =   o.user_code
+        and     s.store_code    =   o.store_code
+        and     o.order_code    =   #{orderCode}
+        and     o.store_code    =   s.store_code
+        order by pay_time desc
+    </select>
+</mapper>
