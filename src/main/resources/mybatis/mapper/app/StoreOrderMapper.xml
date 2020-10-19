@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bookstore.app.dao.AStoreOrderDao">
+<!--    查询门店编号-->
+    <select id="findStoreCode" parameterType="java.lang.String" resultType="java.lang.String">
+        select
+        store_code  as  storeCode
+        from    t_sys_store
+        where   user_code = #{userCode}
+    </select>
+ <!--    查询订单列表接口-->
+    <select id="listManagerOrdersByPage" parameterType="java.lang.String" resultType="AStoreOrderInfo">
+        select
+        order_code        as        orderCode,
+        order_active      as        orderActive,
+        sum_price         as        sumPrice,
+        puchar_num        as        pucharNum,
+        pay_time          as        payTime,
+        o.version         as        version,
+        a1.area_name      as        provinceName,
+        a2.area_name      as        cityName,
+        a3.area_name      as        areaName,
+        s.address         as        address,
+        u.user_code       as        userCode,
+        u.user_name       as        userName,
+        u.user_phone      as        phone
+        from t_sys_order o, t_sys_store s, t_sys_user u,
+        t_sys_area a1, t_sys_area a2, t_sys_area a3
+        where   o.is_delete = 0
+        <if test="orderActive != null and orderActive != ''">
+            and order_active = #{orderActive}
+        </if>
+        and     a1.area_code    =   s.province_code
+        and     a2.area_code    =   s.city_code
+        and     a3.area_code    =   s.area_code
+        and     o.store_code    =   s.store_code
+        and     o.store_code    =   #{storeCode}
+        and     u.user_code     =   o.user_code
+        order by pay_time desc
+    </select>
+<!--    查询订单详情-->
+    <select id="listOrderDetail" resultType="AStoreOrderInfo">
+        select
+        g.goods_name            as      goodsName,
+        g.goods_image_path      as      goodsImagePath,
+        g.goods_introduce       as      goodsIntroduce,
+        g.goods_price           as      goodsPrice,
+        d.goods_count           as      goodsCount,
+        d.goods_code            as      goodsCode,
+        d.order_code            as      orderCode
+        from t_sys_order_detail d, t_sys_goods g
+        where   d.goods_code    =   g.goods_code
+        and     d.is_delete     =   0
+    </select>
+<!--    修改订单状态接口-->
+    <update id="updateOrderActive" parameterType="AStoreOrderInfo">
+        update t_sys_order
+        set
+        order_active            =       #{orderActive},
+        version                 =       version + 1,
+        last_update_user        =       #{lastUpdateUser},
+        last_update_time        =       now()
+        where   order_code  =   #{orderCode}
+        and     version     =   #{version}
+    </update>
+<!--    查询订单列表接口-->
+    <select id="listOrderByPage" parameterType="java.lang.String" resultType="AStoreOrderInfo">
+        select
+        order_code        as        orderCode,
+        order_active      as        orderActive,
+        sum_price         as        sumPrice,
+        puchar_num        as        pucharNum,
+        pay_time          as        payTime,
+        o.version         as        version,
+        a1.area_name      as        provinceName,
+        a2.area_name      as        cityName,
+        a3.area_name      as        areaName,
+        s.address         as        address,
+        u.user_code       as        userCode,
+        u.user_name       as        userName,
+        u.user_phone      as        phone,
+        s.store_name      as        storeName
+        from t_sys_order o, t_sys_store s, t_sys_user u,
+        t_sys_area a1, t_sys_area a2, t_sys_area a3
+        where   o.is_delete = 0
+        and     a1.area_code    =   s.province_code
+        and     a2.area_code    =   s.city_code
+        and     a3.area_code    =   s.area_code
+        and     o.store_code    =   s.store_code
+        and     u.user_code     =   o.user_code
+        and     s.store_code    =   o.store_code
+        and     o.order_code    =   #{orderCode}
+        order by pay_time desc
+    </select>
+</mapper>
