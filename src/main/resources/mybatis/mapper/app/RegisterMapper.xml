@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bookstore.app.dao.ARegisterDao">
+<!--    检查修改得邀请码是否存在-->
+    <select id="isExitInviteCode" parameterType="java.lang.String" resultType="int">
+        select  count(store_code)
+        from    t_sys_store
+        where   is_delete   =   0
+        and     invite_code =   #{inviteCode}
+    </select>
+    <!--    检查账号or手机号是否存在检查账号or手机号是否存在-->
+    <select id="checkUser" parameterType="ARegisterInfo" resultType="int">
+        select  count(user_code)
+        from    t_sys_user
+        where   is_delete       =   0
+        and     user_account    =   #{userAccount}
+        or      user_phone      =   #{userPhone}
+    </select>
+    <!--    新增用户-->
+    <insert id="addUser" parameterType="ARegisterInfo">
+        insert into t_sys_user
+        (
+        user_code,          user_name,          user_phone,
+        user_sex,
+        user_image_path,    user_account,       user_password,
+        user_id_card,       is_delete,          create_user,
+        create_time,        last_update_user,   last_update_time,
+        version,            user_role
+        )
+        values
+        (
+        #{userCode},        #{userName},        #{userPhone},
+        #{userSex},
+        #{userProfile},     #{userAccount},     #{userPassword},
+        #{userIdCard},      #{isDelete},        #{createUser},
+        now(),              #{lastUpdateUser},  now(),
+        0,                  #{userRole}
+        )
+    </insert>
+    <!--    新增客户信息接口-->
+    <insert id="clientRegister" parameterType="ARegisterInfo">
+        insert into t_sys_customer
+        (
+        user_code,          invite_code,            is_delete,
+        create_user,        create_time,            last_update_user,
+        last_update_time,   version
+        )
+        values
+        (
+        #{userCode},        #{inviteCode},      #{isDelete},
+        #{createUser},      now(),              #{lastUpdateUser},
+        now(),              0
+        )
+    </insert>
+</mapper>
