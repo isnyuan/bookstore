@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     //日志
-    private final Logger logger = LoggerFactory.getLogger(GoodsController.class);
+    private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     private UserService userService;
@@ -93,12 +93,6 @@ public class UserController {
         } catch (Exception e) {
             return Response.servers("删除用户操作有误！");
         }
-    }
-
-    @GetMapping("/test")
-    public void test() {
-        System.out.println(SecurityUtils.getCurrentUserCode());
-        System.out.println(SecurityUtils.getCurrentUserAccount());
     }
 
 }

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AreaController {
 
     //日志
-    private final Logger logger = LoggerFactory.getLogger(GoodsController.class);
+    private final Logger logger = LoggerFactory.getLogger(AreaController.class);
 
     @Autowired
     private AreaService areaService;

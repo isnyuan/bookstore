@@ -3,6 +3,7 @@ package com.bookstore.admin.service.impl;
 import com.bookstore.admin.dao.CustomerDao;
 import com.bookstore.admin.entity.CustomerInfo;
 import com.bookstore.admin.service.CustomerService;
+import com.bookstore.page.PageUtils;
 import com.bookstore.utils.Response;
 import com.bookstore.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +33,7 @@ public class CustomerServiceImpl implements CustomerService {
             if (list.size() == 0) {
                 return Response.error("未查询到相关客户列表信息！");
             } else {
-                //return Response.success("查询成功！", getPageInfo(list));
-                return Response.success("查询成功！", list);
+                return Response.success("查询成功！", PageUtils.getPageInfo(list));
             }
         }else {
             //角色为管理员查全部客户
@@ -41,8 +41,7 @@ public class CustomerServiceImpl implements CustomerService {
             if (list.size() == 0) {
                 return Response.error("未查询到相关客户列表信息！");
             } else {
-                //return Response.success("查询成功！", getPageInfo(list));
-                return Response.success("查询成功！", list);
+                return Response.success("查询成功！", PageUtils.getPageInfo(list));
             }
         }
     }

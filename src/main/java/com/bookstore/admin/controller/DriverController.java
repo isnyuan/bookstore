@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class DriverController {
 
     //日志
-    private final Logger logger = LoggerFactory.getLogger(GoodsController.class);
+    private final Logger logger = LoggerFactory.getLogger(DriverController.class);
 
     @Autowired
     private DriverService driverService;

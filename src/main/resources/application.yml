@@ -22,6 +22,8 @@ mybatis:
   typeAliasesPackage: com.bookstore.*.entity
   # 配置mapper的扫描，找到所有的mapper.xml映射文件
   mapperLocations: classpath*:mybatis/mapper/*/*Mapper.xml
+  config-location: classpath:mybatis/mybatis-config.xml
+
 
 # security 使能
 security:

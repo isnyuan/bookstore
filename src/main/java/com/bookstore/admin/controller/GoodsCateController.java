@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class GoodsCateController {
 
     //日志
-    private final Logger logger = LoggerFactory.getLogger(GoodsController.class);
+    private final Logger logger = LoggerFactory.getLogger(GoodsCateController.class);
 
     @Autowired
     private GoodsCateService goodsCateService;
