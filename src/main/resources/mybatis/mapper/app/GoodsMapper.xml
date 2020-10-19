@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bookstore.app.dao.AGoodsDao">
+<!--    查询商品信息详情接口-->
+    <select id="findGoods" resultType="AGoodsInfo">
+        select
+        goods_name            as      goodsName,
+        isbn                  as      isbn,
+        goods_introduce       as      goodsIntroduce,
+        goods_price           as      goodsPrice,
+        goods_image_path      as      goodsImagePath,
+        goods_evaluate_score  as      goodsEvaluateScore,
+        goods_author          as      goodsAuthor ,
+        goods_publish         as      goodsPublish
+        from    t_sys_goods
+        where   is_delete     =       0
+        and     goods_code    =       #{goodsCode}
+        order by create_time
+    </select>
+<!--    查询商品评价列表接口-->
+    <select id="listGoodsEvaluates" parameterType="AGoodsInfo" resultType="AGoodsInfo">
+        select
+        a.user_account                  as          userAccount,
+        b.goods_evaluate_content        as          goodsEvaluateContent,
+        b.goods_evaluate_score          as          goodsEvaluateScore,
+        b.goods_evaluate_time           as          goodsEvaluateTime,
+        b.goods_evaluate_code           as          goodsEvaluateCode
+        from
+        t_sys_user a, t_sys_goods_evaluate b
+        where   b.goods_code           =       #{goodsCode}
+        and     b.goods_evaluate_user  =       a.user_code
+        order by b.create_time
+    </select>
+<!--    查看商品评价图片-->
+    <select id="ListEvaluateImage" parameterType="AGoodsInfo" resultType="AGoodsInfo">
+        select
+        b.goods_evaluate_code         as      goodsEvaluateCode,
+        b.goods_evaluate_image        as      goodsEvaluateImage
+        from
+        t_sys_goods_evaluate a, t_sys_goods_evaluate_image b
+        where   a.is_delete                 =   0
+        and     a.goods_evaluate_code       =   b.goods_evaluate_code
+        order by b.image_sort_num
+    </select>
+<!--   查询一级商品分类列表接口-->
+    <select id="firstListGoodsCate" resultType="AGoodsInfo">
+        select
+        goods_cate_code         as      goodsCateCode,
+        goods_cate_name         as      goodsCateName,
+        version                 as      version,
+        cate_parent_code        as      cateParentCode
+        from    t_sys_goods_cate
+        where   is_delete        =       0
+        and     cate_parent_code =       0
+        order by create_time
+    </select>
+<!--    查询二级商品分类列表接口-->
+    <select id="secondListGoodsCate" resultType="AGoodsInfo">
+        select
+        goods_cate_code         as      goodsCateCode,
+        goods_cate_name         as      goodsCateName,
+        version                 as      version,
+        cate_parent_code        as      cateParentCode
+        from    t_sys_goods_cate
+        where   is_delete           =          0
+        and     cate_parent_code    !=         0
+        and     cate_parent_code     =         #{goodsCateCode}
+        order by create_time
+    </select>
+<!--    查询全部商品-->
+    <select id="listGoods" resultType="AGoodsInfo">
+        select
+        goods_code              as          goodsCode,
+        goods_name              as          goodsName,
+        second_cate_code        as          secondCateCode,
+        goods_image_path        as          goodsImagePath,
+        goods_price             as          goodsPrice
+        from t_sys_goods
+        where is_delete =   0
+        order by create_time
+    </select>
+</mapper>
