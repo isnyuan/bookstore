@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bookstore.app.dao.AShopCarDao">
+<!--    查看商品库存-->
+    <select id="findGoodsStock" parameterType="java.lang.String" resultType="java.lang.String">
+        select
+        goods_stock  as goodsStock
+        from t_sys_goods
+        where goods_code = #{goodsCode}
+    </select>
+<!--    查询购物车是否存在此商品-->
+    <select id="checkShopCar" parameterType="AShopCarInfo" resultType="int">
+        select count(shop_car_code)
+        from t_sys_shop_car
+        where goods_code = #{goodsCode}
+    </select>
+<!--    该商品存在购物车，不新增，数量增加-->
+    <update id="updateShopCarCount" parameterType="AShopCarInfo">
+        update t_sys_shop_car
+        set
+        goods_count             =       goods_count + #{goodsCount},
+        version                 =       version + 1,
+        last_update_user        =       #{lastUpdateUser},
+        last_update_time        =       now()
+        where   goods_code   =   #{goodsCode}
+    </update>
+<!--    新增购物车接口-->
+    <insert id="addShopCar" parameterType="AShopCarInfo">
+        insert into t_sys_shop_car
+        (
+        shop_car_code,
+        goods_code,
+        goods_count,
+        is_delete,
+        create_user,
+        create_time,
+        last_update_user,
+        last_update_time,
+        version
+        )
+        values
+        (
+        #{shopCarCode},
+        #{goodsCode},
+        #{goodsCount},
+        #{isDelete},
+        #{createUser},
+        now(),
+        #{lastUpdateUser},
+        now(),
+        0
+        )
+    </insert>
+<!--    查询购物车接口-->
+    <select id="listShopCarByPage" resultType="AShopCarInfo">
+        select
+        a.goods_code                as          goodsCode,
+        b.goods_name                as          goodsName,
+        b.goods_image_path          as          goodsImagePath,
+        b.goods_price               as          goodsPrice,
+        a.goods_count                as          goodsCount,
+        a.shop_car_code             as          shopCarCode
+        from t_sys_shop_car a, t_sys_goods b
+        where   a.is_delete     =   0
+        and     a.goods_code    =   b.goods_code
+    </select>
+<!--    修改购物车接口-->
+    <update id="updateShopCar" parameterType="AShopCarInfo">
+        update  t_sys_shop_car
+        set
+        goods_count             =       #{goodsCount},
+        version                 =       version + 1,
+        last_update_user        =       #{lastUpdateUser},
+        last_update_time        =       now()
+        where   shop_car_code   =   #{shopCarCode}
+    </update>
+<!--    删除购物车接口-->
+    <update id="deleteShopCar" parameterType="AShopCarDTO">
+        update  t_sys_shop_car
+        set
+        is_delete           =       1,
+        version             =       version + 1,
+        last_update_user    =       #{lastUpdateUser},
+        last_update_time    =       now()
+        where
+        shop_car_code in
+        <foreach collection="shopCarCodeList" item="shopCarCode" index="index" open="(" separator="," close=")">
+            #{shopCarCode}
+        </foreach>
+    </update>
+</mapper>
