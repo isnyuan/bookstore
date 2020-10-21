@@ -1,17 +1,15 @@
 package com.bookstore.config;
 
-import com.bookstore.admin.service.impl.UserDetailsServiceImpl;
+import com.bookstore.security.UserDetailsServiceImpl;
 import com.bookstore.app.component.VerifyCodeFilter;
 import com.bookstore.utils.Response;
 import com.bookstore.utils.SecurityUtils;
 import com.bookstore.utils.StringUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -24,8 +22,8 @@ import java.util.HashMap;
  * @Author: lihuizong
  * @Date: 2020/9/20 12:03
  */
-@EnableWebSecurity
-@Configuration
+//@EnableWebSecurity
+//@Configuration
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired

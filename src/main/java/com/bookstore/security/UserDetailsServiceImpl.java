@@ -1,7 +1,7 @@
-package com.bookstore.admin.service.impl;
+package com.bookstore.security;
 
 import com.bookstore.admin.dao.UserDao;
-import com.bookstore.admin.entity.SecurityUser;
+import com.bookstore.security.SecurityUser;
 import com.bookstore.admin.entity.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
