@@ -11,6 +11,11 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * 功能描述: 自定义登录成功返回格式
+ * @Author: lihuizong
+ * @Date: 2020/10/21 19:39
+ */
 @Component
 @Aspect
 public class AuthTokenAspect {
