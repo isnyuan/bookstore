@@ -25,7 +25,7 @@
     </select>
 <!--    查询此店长门下的所有客户-->
     <select id="listCustomerStoreByPage" parameterType="customerInfo" resultType="customerInfo">
-        select
+        select DISTINCT
         a.user_account        as      userAccount,
         a.user_name           as      userName,
         a.user_sex            as      userSex,
@@ -34,11 +34,12 @@
         a.user_id_card        as      userIdCard,
         a.user_code           as      userCode,
         b.version             as      version
-        from  t_sys_user a, t_sys_customer b, t_sys_store s
+        from  t_sys_user a, t_sys_customer b, t_sys_store s, t_sys_order o
         where b.is_delete     =   0
-        and   s.invite_code =   b.invite_code
+        and   o.store_code  =   s.store_code
         and   s.user_code   =   #{userCode}
         and   a.user_code   =   b.user_code
+        and   o.user_code   =   a.user_code
         <if test="userName != null and userName != ''">
             and a.user_name like concat('%', #{userName}, '%')
         </if>
@@ -47,4 +48,27 @@
         </if>
         order by b.create_time
     </select>
+<!--    <select id="listCustomerStoreByPage" parameterType="customerInfo" resultType="customerInfo">-->
+<!--        select-->
+<!--        a.user_account        as      userAccount,-->
+<!--        a.user_name           as      userName,-->
+<!--        a.user_sex            as      userSex,-->
+<!--        a.user_phone          as      userPhone,-->
+<!--        a.user_email          as      userEmail,-->
+<!--        a.user_id_card        as      userIdCard,-->
+<!--        a.user_code           as      userCode,-->
+<!--        b.version             as      version-->
+<!--        from  t_sys_user a, t_sys_customer b, t_sys_store s-->
+<!--        where b.is_delete     =   0-->
+<!--        and   s.invite_code =   b.invite_code-->
+<!--        and   s.user_code   =   #{userCode}-->
+<!--        and   a.user_code   =   b.user_code-->
+<!--        <if test="userName != null and userName != ''">-->
+<!--            and a.user_name like concat('%', #{userName}, '%')-->
+<!--        </if>-->
+<!--        <if test="userAccount != null and userAccount != ''">-->
+<!--            and a.user_account like concat('%', #{userAccount}, '%')-->
+<!--        </if>-->
+<!--        order by b.create_time-->
+<!--    </select>-->
 </mapper>

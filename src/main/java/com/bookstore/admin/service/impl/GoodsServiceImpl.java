@@ -5,6 +5,7 @@ import com.bookstore.admin.entity.GoodsCateInfo;
 import com.bookstore.admin.entity.GoodsDTO;
 import com.bookstore.admin.entity.GoodsInfo;
 import com.bookstore.admin.service.GoodsService;
+import com.bookstore.page.PageUtils;
 import com.bookstore.utils.Response;
 import com.bookstore.utils.SecurityUtils;
 import com.bookstore.utils.StringUtil;
@@ -77,7 +78,7 @@ public class GoodsServiceImpl implements GoodsService {
             goodsInfo.setGoodsActive(NOSTOCK);
         }else {
             //新增商品，默认为未发布状态，状态码为3（NOUP）
-            goodsInfo.setGoodsActive(NOUP);
+            goodsInfo.setGoodsActive(SALLING);
         }
         //删除标记：未删除0
         goodsInfo.setIsDelete("0");
@@ -120,7 +121,7 @@ public class GoodsServiceImpl implements GoodsService {
             return Response.error("未查询到相关商品列表信息！");
         } else {
             //return Response.success("查询成功！", getPageInfo(goodsInfoList));
-            return Response.success("查询成功！", goodsInfoList);
+            return Response.success("查询成功！", PageUtils.getPageInfo(goodsInfoList));
         }
     }
 

@@ -32,11 +32,11 @@ public class ARegisterServiceImpl implements ARegisterService {
             return Response.error("账号或手机号存在，请重新填写！");
         } else {
             //校验店铺邀请码是否存在
-            String inviteCode = registerInfo.getInviteCode();
-            int isExistInviteCode = aRegisterDao.isExitInviteCode(inviteCode);
-            if(isExistInviteCode == 0){
-                return Response.error("店铺邀请码不存在，注册失败！");
-            }
+//            String inviteCode = registerInfo.getInviteCode();
+//            int isExistInviteCode = aRegisterDao.isExitInviteCode(inviteCode);
+//            if(isExistInviteCode == 0){
+//                return Response.error("店铺邀请码不存在，注册失败！");
+//            }
             //设置用户角色 客户为 3 字段
             registerInfo.setUserRole("3");
             //加密密码

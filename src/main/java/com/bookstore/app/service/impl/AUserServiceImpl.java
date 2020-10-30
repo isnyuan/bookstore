@@ -55,9 +55,9 @@ public class AUserServiceImpl implements AUserService {
         }
         //客户
         if(role.equals(CUSTOMER)){
-            userInfo1 = aUserDao.findCustomer(userCode);
-            String address = userInfo1.getProvinceName()+userInfo1.getCityName()+userInfo1.getCityName()+userInfo1.getAddress();
-            userInfo1.setAddress(address);
+//            userInfo1 = aUserDao.findCustomer(userCode);
+//            String address = userInfo1.getProvinceName()+userInfo1.getCityName()+userInfo1.getCityName()+userInfo1.getAddress();
+//            userInfo1.setAddress(address);
         }
         //司机
         if(role.equals(DRIVER)){
@@ -67,6 +67,8 @@ public class AUserServiceImpl implements AUserService {
         userInfo1.setUserName(userInfo.getUserName());
         userInfo1.setUserImagePath(userInfo.getUserImagePath());
         userInfo1.setRole(userInfo.getRole());
+        userInfo1.setVersion(userInfo.getVersion());
+        userInfo1.setPhone(userInfo.getPhone());
         if(userInfo1==null){
             return Response.error("未查询相关信息，请重新查找！");
         }else {

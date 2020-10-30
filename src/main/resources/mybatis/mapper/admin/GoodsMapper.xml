@@ -14,6 +14,7 @@
         goods_cate_name     as      goodsCateName
         from t_sys_goods_cate
         where cate_parent_code = #{cateParentCode}
+        and   is_delete = 0
     </select>
 <!--    新增商品接口-->
     <insert id="addGoods" parameterType="GoodsInfo">
@@ -59,7 +60,9 @@
         saller_name             as      sallerName,
         isbn                    as      isbn,
         goods_author            as      goodsAuthor,
-        goods_publish           as      goodsPublish
+        goods_publish           as      goodsPublish,
+        a.version               as      version,
+        a.goods_image_path      as      goodsImagePath
         from
         (
         t_sys_goods a
@@ -93,7 +96,8 @@
         goods_author            as      goodsAuthor,
         goods_publish           as      goodsPublish,
         goods_stock             as      goodsStock,
-        a.version               as      version
+        a.version               as      version,
+        a.goods_image_path      as      goodsImagePath
         from
         (
         t_sys_goods a

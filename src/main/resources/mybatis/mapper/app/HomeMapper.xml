@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bookstore.app.dao.AHomeDao">
+<!--    查询首页轮播图接口-->
+    <select id="listRotate" parameterType="java.lang.String" resultType="AHomeInfo">
+        select
+        goods_code          as      goodsCode,
+        rotate_image_path   as      goodsImagePath
+        from t_sys_rotate
+        where   is_delete           =           0
+        and     rotate_active       =           #{rotateActive}
+        and     start_time          &lt;=       now()
+        and     now()               &lt;=       end_time
+        order by    rotate_sort_num,create_time
+    </select>
+<!--    查询热门商品展示数量-->
+    <select id="findHotGoodsShowNum" resultType="AHomeInfo">
+        select
+        dictionary_setting as hotGoodsShowNum,
+        version            as verison
+        from    t_sys_dictionary
+        where   dictionary_code =   123456789
+        and     is_delete       =   0
+    </select>
+<!--    分页查询热门商品接口-->
+    <select id="listHotGoods" resultType="AHomeInfo">
+        select
+        a.goods_code        as      goodsCode,
+        b.goods_name        as      goodsName,
+        b.goods_image_path  as      goodsImagePath,
+        b.goods_price       as      goodsPrice
+        from    t_sys_hot_goods a,  t_sys_goods b
+        where   a.is_delete     =   0
+        and     a.goods_code    =   b.goods_code
+        order by a.hot_goods_sort_num,a.create_time
+    </select>
+</mapper>

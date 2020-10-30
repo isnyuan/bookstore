@@ -84,7 +84,6 @@
         version             as      version
         from t_sys_user
         where is_delete = 0
-        and   user_role != 3
         and   user_role != 4
         <if test="userName != null and userName != ''">
             and user_name like concat('%', #{userName}, '%')

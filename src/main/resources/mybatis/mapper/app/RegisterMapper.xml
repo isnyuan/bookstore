@@ -41,15 +41,29 @@
     <insert id="clientRegister" parameterType="ARegisterInfo">
         insert into t_sys_customer
         (
-        user_code,          invite_code,            is_delete,
+        user_code,          is_delete,
         create_user,        create_time,            last_update_user,
         last_update_time,   version
         )
         values
         (
-        #{userCode},        #{inviteCode},      #{isDelete},
+        #{userCode},        #{isDelete},
         #{createUser},      now(),              #{lastUpdateUser},
         now(),              0
         )
     </insert>
+<!--    <insert id="clientRegister" parameterType="ARegisterInfo">-->
+<!--        insert into t_sys_customer-->
+<!--        (-->
+<!--        user_code,          invite_code,            is_delete,-->
+<!--        create_user,        create_time,            last_update_user,-->
+<!--        last_update_time,   version-->
+<!--        )-->
+<!--        values-->
+<!--        (-->
+<!--        #{userCode},        #{inviteCode},      #{isDelete},-->
+<!--        #{createUser},      now(),              #{lastUpdateUser},-->
+<!--        now(),              0-->
+<!--        )-->
+<!--    </insert>-->
 </mapper>

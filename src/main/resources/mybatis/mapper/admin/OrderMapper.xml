@@ -19,7 +19,42 @@
         and     d.order_code = #{orderCode}
         and     d.order_code = o.order_code
     </select>
-
+    <!--    分页查询订单接口（管理员）-->
+    <select id="listOrderByPage" parameterType="OrderDTO" resultType="OrderInfo">
+        select
+        user_name       as      payUser,
+        user_phone      as      payPhone,
+        order_code      as      orderCode,
+        sum_price       as      sumPrice,
+        order_active    as      orderActive,
+        store_code      as      storeCode,
+        user_name       as      userName,
+        user_phone      as      userPhone,
+        a.version       as      version,
+        pay_time        as      payTime
+        from    t_sys_order a,    t_sys_user b
+        where   a.is_delete     =   0
+        and     a.user_code     =   b.user_code
+        <if test="userName != null and userName != ''">
+            and user_name like concat('%', #{userName}, '%')
+        </if>
+        <if test="userPhone != null and userPhone != ''">
+            and user_phone like concat('%', #{userPhone}, '%')
+        </if>
+        <if test="orderCode != null and orderCode != ''">
+            and order_code like concat('%', #{orderCode}, '%')
+        </if>
+        <if test="orderActive != null and orderActive != ''">
+            and order_active = #{orderActive}
+        </if>
+        <if test="payStartTime != null and payStartTime != ''">
+            and pay_time &gt;= #{payStartTime}
+        </if>
+        <if test="payEndTime != null and payEndTime != ''">
+            and pay_time &lt;= #{payEndTime}
+        </if>
+        order by a.create_time
+    </select>
     <!--    分页查询订单接口（店长查自己门下）-->
     <select id="listOrderStoreByPage" parameterType="OrderDTO" resultType="OrderInfo">
         select
@@ -47,7 +82,7 @@
             and order_code like concat('%', #{orderCode}, '%')
         </if>
         <if test="orderActive != null and orderActive != ''">
-            and orderActive = #{order_active}
+            and order_active = #{orderActive}
         </if>
         <if test="payStartTime != null and payStartTime != ''">
             and pay_time &gt;= #{payStartTime}
