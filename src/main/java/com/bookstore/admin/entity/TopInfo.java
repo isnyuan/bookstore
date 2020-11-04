@@ -35,4 +35,9 @@ public class TopInfo {
      */
     private String role;
 
+    /**
+     * 商店编号
+     */
+    private String storeCode;
+
 }

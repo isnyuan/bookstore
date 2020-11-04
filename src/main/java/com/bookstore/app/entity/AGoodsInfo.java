@@ -154,4 +154,9 @@ public class AGoodsInfo {
      */
     private String version;
 
+    /**
+     * 属于哪家商店
+     */
+    private String storeCode;
+
 }

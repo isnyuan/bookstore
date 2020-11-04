@@ -45,4 +45,9 @@ public class AHomeInfo {
      * 版本号
      */
     private String version;
+
+    /**
+     * 属于哪家商店
+     */
+    private String storeCode;
 }

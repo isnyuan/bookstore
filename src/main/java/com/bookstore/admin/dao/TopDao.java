@@ -14,4 +14,6 @@ public interface TopDao {
 
     TopInfo getTop(@Param("userCode") String userCode);
 
+    TopInfo getStoreCode(String userCode);
+
 }

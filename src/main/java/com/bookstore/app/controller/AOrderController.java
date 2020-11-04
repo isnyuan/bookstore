@@ -40,6 +40,7 @@ public class AOrderController {
      */
     @PostMapping("/addOrder")
     public Response addOrder(AOrderDTO orderDTO){
+        System.out.println("aaaaaaaaaaaaaaaaaaaaaa");
         try {
             return aOrderService.addOrder(orderDTO);
         } catch (Exception e) {

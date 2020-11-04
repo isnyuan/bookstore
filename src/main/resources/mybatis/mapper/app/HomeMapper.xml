@@ -28,7 +28,8 @@
         a.goods_code        as      goodsCode,
         b.goods_name        as      goodsName,
         b.goods_image_path  as      goodsImagePath,
-        b.goods_price       as      goodsPrice
+        b.goods_price       as      goodsPrice,
+        b.store_code        as      storeCode
         from    t_sys_hot_goods a,  t_sys_goods b
         where   a.is_delete     =   0
         and     a.goods_code    =   b.goods_code

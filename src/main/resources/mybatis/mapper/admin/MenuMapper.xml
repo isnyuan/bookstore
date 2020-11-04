@@ -22,7 +22,7 @@
         from t_sys_menu
         where is_delete = 0
         <if test="userRole == 1">
-            and menu_code in ('100861116','100861117','100861119','100861120')
+            and menu_code in ('100861113','100861116','100861117','100861119','100861120')
         </if>
         order by menuCode
     </select>

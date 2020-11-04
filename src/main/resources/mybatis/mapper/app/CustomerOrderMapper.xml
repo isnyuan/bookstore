@@ -125,8 +125,8 @@
     </insert>
 <!--    查询订单列表接口-->
     <select id="listOrderByPage" parameterType="java.lang.String" resultType="AOrderInfo">
-        select
-        order_code        as        orderCode,
+        select  DISTINCT
+        o.order_code        as        orderCode,
         order_active      as        orderActive,
         sum_price         as        sumPrice,
         puchar_num        as        pucharNum,
@@ -135,9 +135,11 @@
         a1.area_name      as        provinceName,
         a2.area_name      as        cityName,
         a3.area_name      as        areaName,
-        s.address         as        address
+        s.address         as        address,
+        s.store_name      as        storeName
         from t_sys_order o, t_sys_store s,
-        t_sys_area a1, t_sys_area a2, t_sys_area a3
+        t_sys_area a1, t_sys_area a2, t_sys_area a3,
+        t_sys_goods g, t_sys_order_detail d
         where   o.is_delete = 0
         <if test="orderActive != null and orderActive != ''">
             and order_active = #{orderActive}
@@ -145,9 +147,34 @@
         and     a1.area_code    =   s.province_code
         and     a2.area_code    =   s.city_code
         and     a3.area_code    =   s.area_code
-        and     o.store_code    =   s.store_code
+        and     o.order_code    =   d.order_code
+        and     d.goods_code    =   g.goods_code
+        and     s.store_code    =   g.store_code
         and     o.user_code     =   #{currentUserCode}
         order by pay_time desc
+<!--        select-->
+<!--        order_code        as        orderCode,-->
+<!--        order_active      as        orderActive,-->
+<!--        sum_price         as        sumPrice,-->
+<!--        puchar_num        as        pucharNum,-->
+<!--        pay_time          as        payTime,-->
+<!--        o.version         as        version,-->
+<!--        a1.area_name      as        provinceName,-->
+<!--        a2.area_name      as        cityName,-->
+<!--        a3.area_name      as        areaName,-->
+<!--        s.address         as        address-->
+<!--        from t_sys_order o, t_sys_store s,-->
+<!--        t_sys_area a1, t_sys_area a2, t_sys_area a3-->
+<!--        where   o.is_delete = 0-->
+<!--        <if test="orderActive != null and orderActive != ''">-->
+<!--            and order_active = #{orderActive}-->
+<!--        </if>-->
+<!--        and     a1.area_code    =   s.province_code-->
+<!--        and     a2.area_code    =   s.city_code-->
+<!--        and     a3.area_code    =   s.area_code-->
+<!--        and     o.store_code    =   s.store_code-->
+<!--        and     o.user_code     =   #{currentUserCode}-->
+<!--        order by pay_time desc-->
     </select>
 <!--    查询订单详情-->
     <select id="listOrderDetail" resultType="AOrderInfo">
@@ -291,8 +318,8 @@
     </update>
 <!--    查询订单列表接口-->
     <select id="findOrder" parameterType="java.lang.String" resultType="AOrderInfo">
-        select
-        order_code        as        orderCode,
+        select  DISTINCT
+        o.order_code        as        orderCode,
         order_active      as        orderActive,
         sum_price         as        sumPrice,
         puchar_num        as        pucharNum,
@@ -307,15 +334,33 @@
         u.user_phone      as        phone,
         s.store_name      as        storeName
         from t_sys_order o, t_sys_store s, t_sys_user u,
-        t_sys_area a1, t_sys_area a2, t_sys_area a3
+        t_sys_area a1, t_sys_area a2, t_sys_area a3,t_sys_order_detail d,t_sys_goods g
         where   o.is_delete = 0
         and     a1.area_code    =   s.province_code
         and     a2.area_code    =   s.city_code
         and     a3.area_code    =   s.area_code
         and     u.user_code     =   o.user_code
-        and     s.store_code    =   o.store_code
+		and     d.order_code    =   o.order_code
+		and     d.goods_code    =   g.goods_code
+		and     g.store_code    =   s.store_code
         and     o.order_code    =   #{orderCode}
-        and     o.store_code    =   s.store_code
         order by pay_time desc
+    </select>
+
+    <!--查询商品信息-->
+    <select id="queryGoodsInfo" parameterType="java.lang.String" resultType="AGoodsInfo">
+        select
+        goods_name              as      goodsName,
+        goods_cost_price        as      goodsCostPrice,
+        goods_price             as      goodsPrice,
+        goods_sall_num          as      goodsSallNum,
+        version                 as      version,
+        store_code              as      storeCode
+        from    t_sys_goods
+        where   is_delete     =       0
+        and     goods_code    =       #{goodsCode}
+<!--        <foreach collection="goodsCodeList" item="orderInfo" index="index" open="(" separator="," close=")" >-->
+<!--            #{orderInfo}-->
+<!--        </foreach>-->
     </select>
 </mapper>

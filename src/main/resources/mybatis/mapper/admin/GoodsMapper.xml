@@ -28,7 +28,7 @@
         goods_start_time,       goods_view_num,     goods_active,
         goods_evaluate_score,   is_delete,          create_user,
         create_time,            last_update_user,   last_update_time,
-        version
+        version,                store_ode
         )
         values
         (
@@ -40,7 +40,7 @@
         #{goodsStartTime},  #{goodsViewNum},    #{goodsActive},
         0,                  #{isDelete},        #{createUser},
         now(),              #{lastUpdateUser},  now(),
-        0
+        0,                  #{storeCode}
         )
     </insert>
 <!--    查询商品详情接口-->
@@ -62,7 +62,8 @@
         goods_author            as      goodsAuthor,
         goods_publish           as      goodsPublish,
         a.version               as      version,
-        a.goods_image_path      as      goodsImagePath
+        a.goods_image_path      as      goodsImagePath,
+        a.store_code            as      storeCode
         from
         (
         t_sys_goods a
@@ -97,7 +98,8 @@
         goods_publish           as      goodsPublish,
         goods_stock             as      goodsStock,
         a.version               as      version,
-        a.goods_image_path      as      goodsImagePath
+        a.goods_image_path      as      goodsImagePath,
+        a.store_code            as      storeCode
         from
         (
         t_sys_goods a
@@ -108,6 +110,9 @@
         t_sys_goods_cate t2
         on a.second_cate_code  =   t2.goods_cate_code
         where   a.is_delete = 0
+        <if test="storeCode != null and storeCode != ''">
+            and a.store_code = #{storeCode}
+        </if>
         <if test="goodsName != null and goodsName != ''">
             and goods_name like concat('%', #{goodsName}, '%')
         </if>

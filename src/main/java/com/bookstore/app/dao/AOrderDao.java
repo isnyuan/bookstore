@@ -1,6 +1,7 @@
 package com.bookstore.app.dao;
 
 import com.bookstore.app.entity.AEvaluateInfo;
+import com.bookstore.app.entity.AGoodsInfo;
 import com.bookstore.app.entity.AOrderDTO;
 import com.bookstore.app.entity.AOrderInfo;
 import org.apache.ibatis.annotations.Mapper;
@@ -167,5 +168,11 @@ public interface AOrderDao {
      */
     int updateAvgGoodsScore(@Param("avgStarList") List<Map> avgStarList);
 
+    /**
+     * 功能描述: 查询商品信息
+     * @Author: lihuizong
+     * @Date: 2020/10/31 22:51
+     */
+    AGoodsInfo queryGoodsInfo(String goodsCode);
 
 }

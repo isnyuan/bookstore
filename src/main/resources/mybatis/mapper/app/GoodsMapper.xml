@@ -11,7 +11,8 @@
         goods_image_path      as      goodsImagePath,
         goods_evaluate_score  as      goodsEvaluateScore,
         goods_author          as      goodsAuthor ,
-        goods_publish         as      goodsPublish
+        goods_publish         as      goodsPublish,
+        store_code            as      storeCode
         from    t_sys_goods
         where   is_delete     =       0
         and     goods_code    =       #{goodsCode}
@@ -74,7 +75,8 @@
         goods_name              as          goodsName,
         second_cate_code        as          secondCateCode,
         goods_image_path        as          goodsImagePath,
-        goods_price             as          goodsPrice
+        goods_price             as          goodsPrice,
+        store_code              as          storeCode
         from t_sys_goods
         where is_delete =   0
         order by create_time

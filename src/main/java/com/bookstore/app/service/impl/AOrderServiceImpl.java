@@ -3,6 +3,7 @@ package com.bookstore.app.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.bookstore.app.dao.AOrderDao;
 import com.bookstore.app.entity.AEvaluateInfo;
+import com.bookstore.app.entity.AGoodsInfo;
 import com.bookstore.app.entity.AOrderDTO;
 import com.bookstore.app.entity.AOrderInfo;
 import com.bookstore.app.service.AOrderService;
@@ -16,11 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import javax.annotation.Resource;
+import java.lang.reflect.Array;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -60,9 +59,23 @@ public class AOrderServiceImpl implements AOrderService {
     //添加事务
     @Transactional(rollbackFor = Exception.class)
     public Response addOrder(AOrderDTO orderDTO) {
-        if ("".equals(orderDTO.getStoreCode()) || orderDTO.getStoreCode() == null) {
-            return Response.error("门店编号为空，请先绑定门店！");
+//        if ("".equals(orderDTO.getStoreCode()) || orderDTO.getStoreCode() == null) {
+//            return Response.error("门店编号为空，请先绑定门店！");
+//        }
+
+        // 获取商品编号和数量
+        List<String> listCode = Arrays.asList(orderDTO.getGoodsCode().split(","));
+        List<String> listCount = Arrays.asList(orderDTO.getGoodsCount().split(","));
+        orderDTO.setGoodsCodeList(listCode);
+        orderDTO.setGoodsCountList(listCount);
+
+        // 通过商品编号查询商品信息
+        ArrayList<AGoodsInfo> aGoodsInfos = new ArrayList<>();
+        for (int i = 0; i < listCode.size(); i++) {
+            AGoodsInfo aGoodsInfo = aOrderDao.queryGoodsInfo(listCode.get(i));
+            aGoodsInfos.add(aGoodsInfo);
         }
+
         //设置购物车编号列表为null,避免空指针异常
         orderDTO.setShopCarCodeList(null);
         //查看订单中商品的库存
@@ -142,20 +155,23 @@ public class AOrderServiceImpl implements AOrderService {
             map.put("orderDetailCode", orderDetailCode);
             map.put("goodsCode", orderDTO.getGoodsCodeList().get(i));
             map.put("goodsCount", orderDTO.getGoodsCountList().get(i));
-            map.put("goodsPrice", orderDTO.getGoodsPriceList().get(i));
+//            map.put("goodsPrice", orderDTO.getGoodsPriceList().get(i));
+            map.put("goodsPrice", aGoodsInfos.get(i).getGoodsPrice());
             map.put("createUser", SecurityUtils.getCurrentUserCode());
             map.put("lastUpdateUser", SecurityUtils.getCurrentUserCode());
             map.put("userCode", SecurityUtils.getCurrentUserCode());
             map.put("orderCode", orderInfo.getOrderCode());
             pucharNum += Integer.parseInt(orderDTO.getGoodsCountList().get(i));
-            sumPrice += Double.parseDouble(orderDTO.getGoodsPriceList().get(i)) * Double.parseDouble(orderDTO.getGoodsCountList().get(i));
+            sumPrice += Double.parseDouble(aGoodsInfos.get(i).getGoodsPrice()) * Double.parseDouble(orderDTO.getGoodsCountList().get(i));
+            System.out.println(sumPrice);
             mapList.add(map);
         }
         orderInfo.setMapList(mapList);
         orderInfo.setPucharNum(pucharNum);
         orderInfo.setSumPrice(sumPrice);
         //设置门店编号
-        orderInfo.setStoreCode(orderDTO.getStoreCode());
+//        orderInfo.setStoreCode(orderDTO.getStoreCode());
+        //orderInfo.setStoreCode(aGoodsInfos.get(0).getStoreCode());
         //设置支付状态
         orderInfo.setPayActive(PAYACTIVE);
         //设置订单状态
@@ -186,8 +202,10 @@ public class AOrderServiceImpl implements AOrderService {
         PageHelper.startPage(orderDTO.getPageNum(), orderDTO.getPageSize());
         //查询订单列表，orderDTO.getOrderActive()：订单状态，SecurityUtils.getCurrentUserId()：当前登录者
         List<AOrderInfo> orderInfoList = aOrderDao.listOrderByPage(orderDTO.getOrderActive(), SecurityUtils.getCurrentUserCode());
+        System.out.println(orderInfoList);
         //查询订单详情列表
         List<AOrderInfo> orderInfoDetailList = aOrderDao.listOrderDetail();
+        System.out.println(orderInfoDetailList);
         for (int i = 0; i < orderInfoList.size(); i++) {
             //new一个List存对应商品详情
             List<AOrderInfo> list = new ArrayList<>();
@@ -301,8 +319,8 @@ public class AOrderServiceImpl implements AOrderService {
             map.put("pucharNum", orderInfoList.get(i).getPucharNum());
             map.put("version", orderInfoList.get(i).getVersion());
             List<Map> list = new ArrayList<>();
-            Map map1 = new HashMap();
             for (int i1 = 0; i1 < orderInfoDetailList.size(); i1++) {
+                Map map1 = new HashMap();
                 if (orderInfoDetailList.get(i1).getOrderCode().equals(orderInfoList.get(i).getOrderCode())) {
                     map1.put("goodsName", orderInfoDetailList.get(i1).getGoodsName());
                     map1.put("goodsImagePath", orderInfoDetailList.get(i1).getGoodsImagePath());

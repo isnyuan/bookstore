@@ -11,4 +11,14 @@
         from t_sys_user
         where user_code = #{userCode}
     </select>
+
+    <!---->
+    <select id="getStoreCode" parameterType="java.lang.String" resultType="TopInfo">
+        select
+        store_code  as   storeCode
+        from
+        t_sys_store
+        where
+        user_code = #{userCode}
+    </select>
 </mapper>
